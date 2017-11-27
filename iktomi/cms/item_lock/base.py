@@ -126,10 +126,10 @@ class ItemLockData(object):
             try:
                 edit_session = env.item_lock.update_or_create(
                     item, edit_session)
-            except ModelLockedByOther, e:
+            except ModelLockedByOther as e:
                 message = unicode(e)
                 owner_session = e.edit_session
-            except ModelLockError, e:
+            except ModelLockError as e:
                 message = unicode(e)
         return cls(env, stream, item, filter_form,
                    edit_session, owner_session, message)

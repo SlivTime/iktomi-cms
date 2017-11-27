@@ -428,7 +428,7 @@ class EditItemHandler(StreamAction):
                     try:
                         gid = ItemLock.item_global_id(item)
                         lock = env.item_lock.create(gid)
-                    except ModelLockError, e:
+                    except ModelLockError as e:
                         flash(env, unicode(e))
                     else:
                         result = dict(result,
