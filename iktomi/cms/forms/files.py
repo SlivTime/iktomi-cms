@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from cStringIO import StringIO
+from io import BytesIO
 from jinja2 import Markup
 from iktomi.forms.form import Form
 from iktomi.forms.files import FileFieldSet, FileFieldSetConv
@@ -182,7 +182,7 @@ class AjaxImageField(AjaxFileField):
             else:
                 img = resizer(img, (100, 100))
                 img = img.convert('RGB')
-                img_file = StringIO()
+                img_file = BytesIO()
                 img.save(img_file, format='jpeg')
                 data = "data:image/jpeg;base64," + \
                         img_file.getvalue().encode('base64').replace('\n', '')

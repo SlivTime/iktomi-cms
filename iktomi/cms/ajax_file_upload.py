@@ -32,7 +32,7 @@ class FileUploadHandler(web.WebHandler):
     def get_length(self, request):
         length = int(request.environ.get('CONTENT_LENGTH', 0))
         if not length:
-            from StringIO import StringIO
+            from io import StringIO
             from pprint import pprint
             sio = StringIO()
             sio.write('No content-length provided! \nHeaders:\n')
