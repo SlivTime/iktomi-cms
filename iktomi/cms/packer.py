@@ -99,7 +99,7 @@ class StaticPacker(WebHandler):
         return files
 
     def css_packer(self, env, data):
-        ext = '.css'
+        ext = 'css'
 
         if getattr(env.cfg, 'CACHE_PACKED', False) \
             and getattr(self, '_cached_css', None):
@@ -124,7 +124,7 @@ class StaticPacker(WebHandler):
                                        mimetype='text/css')
 
     def js_packer(self, env, data):
-        ext = '.js'
+        ext = 'js'
 
         if getattr(env.cfg, 'CACHE_PACKED', False) \
             and getattr(self, '_cached_js', None):
