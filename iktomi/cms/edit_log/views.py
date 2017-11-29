@@ -145,7 +145,7 @@ def global_log(env, data, stream=None):
         expand_obj = partial(_expand, env, for_item=data.item)
         paginator.items = [expand_obj(obj) for obj in paginator.items]
 
-    paginator.items = filter(None, paginator.items)
+    paginator.items = [item for item in paginator.items if item is not None]
 
     reverse_data = data.as_dict()
     if stream is not None:

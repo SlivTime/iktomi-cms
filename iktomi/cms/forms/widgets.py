@@ -129,7 +129,7 @@ class WysiHtml5(Widget):
         allowed = (set(all_btns) - tag_buttons) | buttons
         buttons = [[btn for btn in btns if btn in allowed]
                    for name, btns in self.button_blocks]
-        return filter(None, buttons)
+        return [item for item in buttons if item]
 
     def has_button(self, button):
         return button in self.real_buttons
@@ -270,7 +270,8 @@ class PopupStreamSelect(Select):
         assert isinstance(choice_conv, convs.EnumChoice)
 
         values = value if self.multiple else [value]
-        values = filter(None, map(choice_conv.to_python, values))
+        values = [choice_conv.to_python(item) for item in values]
+        values = [value for value in values if value]
         return values
 
 
