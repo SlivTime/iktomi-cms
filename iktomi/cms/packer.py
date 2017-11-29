@@ -73,7 +73,34 @@ class StaticPacker(WebHandler):
 
             return data
 
+    def _clean_filename(self, filename, extension):
+        """
+        Cleanup filename from manifest and return it with given extension. 
+        Can return `None` for empty names.
+        :param filename: str
+        :param extension: str
+        :return: str or None
+        """
+        clean = filename.split('#')[0].strip()
+        if clean:
+            return '{filename}.{extension}'.format(filename=clean,
+                                                   extension=extension)
+
+    def _get_manifest_filenames(self, fp, file_ext):
+        """
+        Return list of files from manifest file object.
+        :param fp: file pointer
+        :param file_ext: str
+        :return: list(str)
+        """
+        files = [self._clean_filename(x, file_ext)
+                 for x in fp.read().splitlines()]
+        files = [x for x in files if x is not None]
+        return files
+
     def css_packer(self, env, data):
+        ext = '.css'
+
         if getattr(env.cfg, 'CACHE_PACKED', False) \
             and getattr(self, '_cached_css', None):
             return self.response_with_etag(env.request, self._cached_css,
@@ -85,10 +112,7 @@ class StaticPacker(WebHandler):
             root = path.dirname(manifest_filename)
             base_url = manifest['url'] + path.dirname(manifest['css']) + '/'
             with open(manifest_filename) as f_manifest:
-                files = [x.split('#')[0].strip()
-                         for x in f_manifest.read().splitlines()]
-                files = filter(None, files)
-                files = [x + '.css' for x in files]
+                files = self._get_manifest_filenames(f_manifest, ext)
             for name in files:
                 data = self.get_css_contents(base_url, root,
                                              path.join(root, name))
@@ -100,6 +124,8 @@ class StaticPacker(WebHandler):
                                        mimetype='text/css')
 
     def js_packer(self, env, data):
+        ext = '.js'
+
         if getattr(env.cfg, 'CACHE_PACKED', False) \
             and getattr(self, '_cached_js', None):
             return self.response_with_etag(env.request, self._cached_js,
@@ -111,10 +137,7 @@ class StaticPacker(WebHandler):
             manifest_filename = path.join(manifest['path'], manifest['js'])
             root = path.dirname(manifest_filename)
             with open(manifest_filename) as f_manifest:
-                files = [x.split('#')[0].strip()
-                         for x in f_manifest.read().splitlines()]
-                files = filter(None, files)
-                files = [x + '.js' for x in files]
+                files = self._get_manifest_filenames(f_manifest, ext)
             for name in files:
                 filename = path.join(root, name)
                 with open(filename, encoding='utf-8') as f:
