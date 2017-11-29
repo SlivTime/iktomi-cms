@@ -2,6 +2,7 @@
 import os
 import logging
 from jinja2 import Markup
+from io import open
 
 logger = logging.getLogger(__name__)
 
@@ -47,9 +48,9 @@ class HelpLoader(object):
             if filename.startswith("."):
                 continue
             filepath = os.path.join(self.template_root, dirname, filename)
-            with open(filepath) as f:
+            with open(filepath, encoding='utf-8') as f:
                 helpkey, _ = os.path.splitext(filename)
-                messages[helpkey] = f.read().decode('utf8')
+                messages[helpkey] = f.read()
         category, _ = os.path.splitext(dirname)
         self.default_help_messages[category] = messages
 
@@ -67,11 +68,12 @@ class HelpLoader(object):
                 for filename in files:
                     if filename.startswith("."):
                         continue
-                    template_name = os.path.join(root[len(self.template_root):], filename)
+                    template_name = os.path.join(root[len(self.template_root):],
+                                                 filename)
                     filepath = os.path.join(root, filename)
                     helpkey, _ = os.path.splitext(template_name)
-                    with open(filepath) as f:
-                        self.help_messages[helpkey.lstrip("/")] = f.read().decode('utf8')
+                    with open(filepath, encoding='utf-8') as f:
+                        self.help_messages[helpkey.lstrip("/")] = f.read()
 
     def get_help(self, key, category='Global'):
         html = self.help_messages.get(key, '')
